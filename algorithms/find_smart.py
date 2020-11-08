@@ -1,9 +1,10 @@
 from box import Box
 from result import Result
 
-class FindBest:
+class FindSmart:
     def __init__(self, all_clones, max_generations, minimum_score):
         self.all_clones = all_clones
+        self.current_generation = 0
         self.max_generations = max_generations
         self.minimum_score = minimum_score
         self.best_score = -100
@@ -20,8 +21,17 @@ class FindBest:
         if score == self.best_score:
             resultBox = Result(result, box)
             self.best_clones.add(resultBox)
+        if score >= self.minimum_score and \
+                self.current_generation < self.max_generations:
+            self.all_clones.add_clone(result)
 
     def run(self):
+        while self.current_generation < self.max_generations:
+            self.current_generation += 1
+            self._generation()
+            print(self.all_clones.size())
+
+    def _generation(self):
         clones = list(self.all_clones.clones())
         num_clones = len(clones)
         for i in range(num_clones):

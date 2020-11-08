@@ -3,7 +3,7 @@ from box import Box
 from clone import Clone
 from result import Result
 from clonestorage import CloneStorage
-from find_best import FindBest
+from algorithms.find_smart import FindSmart
 
 
 def read_from_csv():
@@ -17,9 +17,9 @@ def read_from_csv():
 
 def main():
     all_clones = read_from_csv()
-    find_best = FindBest(all_clones, 1, 1)
-    find_best.run()
-    find_best.print()
+    find = FindSmart(all_clones, 1, 15)
+    find.run()
+    find.print()
 
 if __name__ == "__main__":
     main()
