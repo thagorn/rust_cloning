@@ -1,0 +1,9 @@
+WATER = "W" # Red gene
+EMPTY = "X" # Red gene
+YIELD = "Y" # Green gene
+GROWTH = "G" # Green gene
+HEARTY = "H" # Green gene (but shitty)
+UNDEFINED_GREEN = "U" #(Could be Y OR G OR H)
+UNDEFINED_RED = "Z" #(Could be W OR X)
+VALID_GENES = {WATER, EMPTY, YIELD, GROWTH, HEARTY, UNDEFINED_GREEN, UNDEFINED_RED}
+RED_GENES = {EMPTY, WATER, UNDEFINED_RED}
