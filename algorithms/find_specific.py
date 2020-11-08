@@ -50,3 +50,53 @@ def check_targets(all_clones, targets):
     for target_clone in targets:
         completed_target = all_clones.get_equivalent(target_clone)
         if completed_target != None:
+            completed_targets.append(completed_target)
+            targets.remove(target_clone)
+    return completed_targets
+
+def get_path_to_targets(targets, max_generation):
+    generations = [set()] * max_generation
+    while len(targets) > 0:
+        new_targets = []
+        for target in targets:
+            target_box = target.get_box()
+            generation = 0 if target_box is None else target_box.get_generation()
+            if target in generations[generation]:
+                continue
+            generations[generation].add(target)
+            if target_box is not None:
+                new_targets.extend(target_box.get_parents())
+        targets = new_targets
+    return generations
+
+def print_generations(generations):
+    for i in range(len(generations)):
+        print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+        print("Generation: %d" % (i))
+        clones = list(generations[i])
+        for clone in clones:
+            print(clone.get_result())
+
+def find_specific(all_clones):
+    targets = [Clone("YYYYYY"), Clone("GYYYYY"), Clone("GGYYYY"),
+            Clone("GGGYYY"), Clone("GGGGYY"), Clone("GGGGGY"), Clone("GGGGGG")]
+    completed_targets = []
+    current_size = all_clones.size()
+    generation_count = 0
+    while True:
+        generation_count += 1
+        print("Generation: %d" % generation_count)
+        breed(all_clones, generation_count)
+        completed_targets.append(check_targets(all_clones, targets))
+        if len(targets) == 0:
+            print("Done")
+            break
+        new_size = all_clones.size()
+        if new_size == current_size:
+            print("Ran out of possible clones")
+            break
+        if generation_count == 20:
+            print("Hit 20 generations")
+            break
+    generations = get_path_to_targets(completed_targets, max_generation)
+    print_generations(generations)

@@ -1,3 +1,4 @@
+import argparse
 import csv
 from box import Box
 from clone import Clone
@@ -17,7 +18,7 @@ def read_from_csv():
 
 def main():
     all_clones = read_from_csv()
-    find = FindSmart(all_clones, 1, 15)
+    find = FindSmart(all_clones, 2, 20)
     find.run()
     find.print()
 

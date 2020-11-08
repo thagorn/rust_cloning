@@ -21,6 +21,6 @@ class ProgressBar:
         sys.stderr.flush()
 
     def clear(self):
-        sys.stderr.write('\r' + ' '*26)
+        sys.stderr.write('\r\n')
         sys.stderr.flush()
 
