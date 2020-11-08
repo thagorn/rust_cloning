@@ -1,5 +1,7 @@
 from box import Box
 from result import Result
+from utils.progressbar import ProgressBar
+from utils.combinations import ncr
 
 class FindSmart:
     def __init__(self, all_clones, max_generations, minimum_score):
@@ -29,26 +31,30 @@ class FindSmart:
         while self.current_generation < self.max_generations:
             self.current_generation += 1
             self._generation()
-            print(self.all_clones.size())
 
     def _generation(self):
         clones = list(self.all_clones.clones())
         num_clones = len(clones)
+        pb = ProgressBar(ncr(num_clones, 4) + ncr(num_clones, 3))
+        print("Starting generation {} with {} clones".format(self.current_generation, num_clones))
         for i in range(num_clones):
-            for j in range(i, num_clones):
-                for k in range(j, num_clones):
-                    for l in range(k, num_clones):
+            for j in range(i+1, num_clones):
+                for k in range(j+1, num_clones):
+                    for l in range(k+1, num_clones):
                         box = Box([clones[i], clones[j], clones[k], clones[l]], 1)
                         self._process(box)
+                        pb.increment()
 
         for i in range(num_clones):
-            for j in range(i, num_clones):
-                for k in range(j, num_clones):
+            for j in range(i+1, num_clones):
+                for k in range(j+1, num_clones):
                     clone1 = clones[i]
                     clone2 = clones[j]
                     clone3 = clones[k]
                     box = Box([clones[i], clones[j], clones[k]], 1)
                     self._process(box)
+                    pb.increment()
+        pb.clear()
 
     def print(self):
         sorted_clones = sorted(list(self.best_clones), key=lambda result: (result.get_clone().yield_count(), result.get_box().get_size()))

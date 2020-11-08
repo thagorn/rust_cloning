@@ -4,6 +4,11 @@ class ProgressBar:
     def __init__(self, size):
         self.size = size
         self.last_percentage = -1.0
+        self.counter = 0
+
+    def increment(self):
+        self.counter += 1
+        self.update(self.counter)
 
     def update(self, position):
         percentage = (position + 1) / self.size
