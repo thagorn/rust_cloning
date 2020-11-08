@@ -156,7 +156,6 @@ def read_from_csv():
     clones_file = open("clones.tsv", 'r')
     clones_reader = csv.reader(clones_file, delimiter="\t", quotechar='"')
     for row in clones_reader:
-        count = int(row[1])
         cloneString = row[0]
         if count > 0:
             all_clones.add_clone(Clone.fromString(cloneString))
