@@ -1,36 +1,33 @@
 import sys
 from box import Box
-from result import Result
-from utils.progressbar import ProgressBar
 from utils.combinations import ncr
+from utils.printer import ClonePathPrinter
+from utils.progressbar import ProgressBar
 
-class FindSmart:
-    def __init__(self, all_clones, max_generations, minimum_score):
+class FindSpecificSmart:
+    def __init__(self, all_clones, target, minimum_score):
         self.all_clones = all_clones
         self.current_generation = 0
-        self.max_generations = max_generations
+        self.target = target
         self.minimum_score = minimum_score
-        self.best_score = -100
-        self.best_clones = set()
+        self.result = None
+        self.done = False
 
     def _process(self, box):
         result = box.get_offspring()
         if result in self.all_clones.clones():
             return
         score = result.score()
-        if score > self.best_score:
-            self.best_score = score
-            self.best_clones = set()
-        if score == self.best_score:
-            resultBox = Result(result, box)
-            self.best_clones.add(resultBox)
-        if (score == 30) or \
-                (score >= self.minimum_score and \
-                self.current_generation < self.max_generations):
+        if (score == 30):
+            if self.target.is_equivalent(result):
+                self.result = result
+                self.done = True
+                return
+        if score >= self.minimum_score:
             self.all_clones.add_clone(result)
 
     def run(self):
-        while self.current_generation < self.max_generations:
+        while not self.done:
             self.current_generation += 1
             self._generation()
 
@@ -45,6 +42,8 @@ class FindSmart:
                     for l in range(k+1, num_clones):
                         box = Box([clones[i], clones[j], clones[k], clones[l]], self.current_generation)
                         self._process(box)
+                        if self.done:
+                            return
                         pb.increment()
 
         for i in range(num_clones):
@@ -55,10 +54,11 @@ class FindSmart:
                     clone3 = clones[k]
                     box = Box([clones[i], clones[j], clones[k]], self.current_generation)
                     self._process(box)
+                    if self.done:
+                        return
                     pb.increment()
         pb.clear()
 
     def print(self):
-        sorted_clones = sorted(list(self.best_clones), key=lambda result: (result.get_clone().yield_count(), result.get_box().get_size()))
-        for result in sorted_clones:
-            result.print()
+        printer = ClonePathPrinter()
+        printer.print_clone(self.result)

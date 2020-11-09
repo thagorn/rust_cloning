@@ -69,6 +69,12 @@ class Clone:
 
     def score(self):
         score = 0
+        if self.genes == ("W", "Y", "Y", "W", "Y", "Y"):
+            return 100
+        if self.genes == ("Y", "G", "H", "G", "G", "X"):
+            return 100
+        if self.genes == ("Y", "G", "Y", "G", "Y", "H"):
+            return 100
         for gene in self.genes:
             if gene == GROWTH:
                 score += 5
