@@ -27,9 +27,15 @@ class FindSpecificSmart:
             self.all_clones.add_clone(result)
 
     def run(self):
+        current_size = self.all_clones.size()
         while not self.done:
+            last_size = current_size
             self.current_generation += 1
             self._generation()
+            if current_size == self.all_clones.size():
+                print("Halting: Failed to generate unique clones")
+                return
+            current_size = self.all_clones.size()
 
     def _generation(self):
         clones = list(self.all_clones.clones())
